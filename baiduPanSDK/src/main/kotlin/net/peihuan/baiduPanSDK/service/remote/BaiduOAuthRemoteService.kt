@@ -8,6 +8,7 @@ import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import java.net.URLEncoder
 
 
 class BaiduOAuthRemoteService(
@@ -18,7 +19,7 @@ class BaiduOAuthRemoteService(
     private val log = KotlinLogging.logger {}
     private val gson =  Gson()
 
-    final val BASE_URL = "http://openapi.baidu.com"
+    private val BASE_URL = "http://openapi.baidu.com"
 
     fun authorize(redirectUrl: String): String {
 
@@ -26,6 +27,7 @@ class BaiduOAuthRemoteService(
             .addQueryParameter("response_type", "code")
             .addQueryParameter("client_id", baiduPanProperties.clientId)
             .addQueryParameter("redirect_uri", redirectUrl)
+            .addQueryParameter("scope", "basic,netdisk")
             .addQueryParameter("device_id", baiduPanProperties.deviceId)
             .build()
 
@@ -47,7 +49,8 @@ class BaiduOAuthRemoteService(
             .build()
 
         val response = okHttpClient.newCall(request).execute()
-        val json = response.body.toString()
+
+        val json = response.body?.string()
         return gson.fromJson(json, AuthorizeResponseDTO::class.java)
 
     }
