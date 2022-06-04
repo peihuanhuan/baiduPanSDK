@@ -18,13 +18,12 @@ class BaiduPanRemoteService(
     private val baiduPanProperties: BaiduPanProperties
 ) {
 
-    private val log = KotlinLogging.logger {}
     private val gson =  Gson()
 
-    val BASE_URL = "http://pan.baidu.com"
+    private val BASE_URL = "http://pan.baidu.com"
 
 
-    fun precreate(accessToken: String, path: String, size:Int, isdir:Boolean, block_list: List<String>, rtype: RtypeEnum = RtypeEnum.RENAME): PrecreateResponseDTO {
+    fun precreate(accessToken: String, path: String, size:Long, isdir:Boolean, block_list: List<String>, rtype: RtypeEnum = RtypeEnum.RENAME): PrecreateResponseDTO {
 
         val requestBody: RequestBody = FormBody.Builder()
             .add("method", "precreate")
@@ -75,7 +74,7 @@ class BaiduPanRemoteService(
     }
 
 
-    fun create(accessToken: String, path: String, size:Int, isdir:Boolean, block_list: List<String>, rtype: RtypeEnum = RtypeEnum.RENAME): CreateResponseDTO {
+    fun create(accessToken: String, path: String, size:Long, isdir:Boolean, block_list: List<String>, rtype: RtypeEnum = RtypeEnum.RENAME): CreateResponseDTO {
 
         val requestBody: RequestBody = FormBody.Builder()
             .add("method", "create")
