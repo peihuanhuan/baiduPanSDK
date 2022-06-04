@@ -29,13 +29,7 @@ class BaiduOAuthRemoteService(
             .addQueryParameter("device_id", baiduPanProperties.deviceId)
             .build()
 
-        val request = Request.Builder()
-            .url(url)
-            .get()
-            .build()
-
-        val response = okHttpClient.newCall(request).execute()
-        return response.body.toString()
+        return url.toString()
     }
 
     fun getToken(code: String, redirectUrl: String): AuthorizeResponseDTO {

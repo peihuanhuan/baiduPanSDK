@@ -2,3 +2,5 @@ build
 demo/build
 baiduPanSDK/build
 .idea
+.gradle
+demo/src/main/resources/application.yaml

@@ -14,7 +14,7 @@ class PanTest {
 
     @Test
     fun test() {
-        baiduOAuthRemoteService.authorize("xxx")
-
+        val x = baiduOAuthRemoteService.authorize("http://baidupan.dejavuu.cn/xx")
+        print(x)
     }
 }
