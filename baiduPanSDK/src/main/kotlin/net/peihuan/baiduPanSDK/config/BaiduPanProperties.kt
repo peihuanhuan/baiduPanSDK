@@ -9,5 +9,6 @@ class BaiduPanProperties(){
         lateinit var clientId: String
         lateinit var deviceId: String
         lateinit var clientSecret: String
+        lateinit var rootDir: String
 }
 

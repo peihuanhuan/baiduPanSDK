@@ -1,10 +1,12 @@
 package net.peihuan.demo
 
+import net.peihuan.baiduPanSDK.service.PanService
 import net.peihuan.baiduPanSDK.service.remote.BaiduOAuthRemoteService
 import net.peihuan.baiduPanSDK.service.remote.BaiduPanRemoteService
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import java.io.File
 
 @SpringBootTest
 class PanTest {
@@ -13,7 +15,8 @@ class PanTest {
     lateinit var baiduOAuthRemoteService: BaiduOAuthRemoteService
     @Autowired
     lateinit var baiduPanRemoteService: BaiduPanRemoteService
-
+    @Autowired
+    lateinit var panService: PanService
 
     @Test
     fun test_authorize() {
@@ -37,5 +40,12 @@ class PanTest {
         )
 
         println(x)
+    }
+
+    @Test
+    fun test_upload() {
+//        panService.uploadFile("filename.docx", File("C:\\Users\\Administrator\\Desktop\\裴欢_Java后端_简历.docx"))
+        panService.uploadFile("xxx.exe", File("C:\\Users\\Administrator\\Desktop\\tieba_tool\\chromedriver.exe"))
+
     }
 }

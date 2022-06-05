@@ -1,5 +1,6 @@
 package net.peihuan.baiduPanSDK.service
 
+import net.peihuan.baiduPanSDK.config.BaiduPanProperties
 import net.peihuan.baiduPanSDK.feign.dto.PrecreateResponseDTO
 import net.peihuan.baiduPanSDK.service.remote.BaiduPanRemoteService
 import org.springframework.stereotype.Service
@@ -8,12 +9,13 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.OutputStream
 import java.math.BigInteger
+import java.net.URLEncoder
 import java.security.MessageDigest
 
-@Service
 class PanService(
     private val baiduPanRemoteService: BaiduPanRemoteService,
-    private val baiduOauthService: BaiduOauthService
+    private val baiduOauthService: BaiduOauthService,
+    private val baiduPanProperties: BaiduPanProperties,
 ) {
 
     private val part_max_size: Int = 4 * 1024 * 1024
@@ -25,21 +27,20 @@ class PanService(
     }
 
     fun uploadFile(path: String, file: File) {
-
+        val encodePath = baiduPanProperties.rootDir+URLEncoder.encode(path)
         val accessToken = baiduOauthService.getAccessToken()
         val blockList = getBlockList(file)
         val precreate = baiduPanRemoteService.precreate(
             accessToken = accessToken,
-            path = path,
+            path = encodePath,
             size = file.length(),
             isdir = false,
             block_list = blockList
         )
 
-        upload(file, accessToken, path, precreate)
+        upload(file, accessToken, encodePath, precreate)
 
-        baiduPanRemoteService.create(accessToken = accessToken, path = path, isdir = false, size = file.length(), block_list = blockList)
-
+        val x = baiduPanRemoteService.create(accessToken = accessToken, uploadid = precreate.uploadid, path = encodePath, isdir = false, size = file.length(), block_list = blockList)
     }
 
     private fun upload(

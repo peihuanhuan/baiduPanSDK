@@ -1,5 +1,7 @@
 package net.peihuan.baiduPanSDK.config
 
+import net.peihuan.baiduPanSDK.service.BaiduOauthService
+import net.peihuan.baiduPanSDK.service.PanService
 import net.peihuan.baiduPanSDK.service.remote.BaiduOAuthRemoteService
 import net.peihuan.baiduPanSDK.service.remote.BaiduPanRemoteService
 import okhttp3.OkHttpClient
@@ -19,8 +21,10 @@ class AutoConfiguration() {
     @ConditionalOnMissingBean
     fun okHttpClient(): OkHttpClient {
         val okHttpClient = OkHttpClient().newBuilder()
-            .connectTimeout(15, TimeUnit.SECONDS)
-            .readTimeout(5, TimeUnit.SECONDS)
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .callTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
             .build()
         return okHttpClient
     }
@@ -35,5 +39,11 @@ class AutoConfiguration() {
     @ConditionalOnMissingBean
     fun baiduPanRemoteService(properties: BaiduPanProperties): BaiduPanRemoteService {
         return BaiduPanRemoteService(okHttpClient(), properties)
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    fun panService(properties: BaiduPanProperties): PanService {
+        return PanService(baiduPanRemoteService(properties), BaiduOauthService(baiduOAuthRemoteService(properties)), properties)
     }
 }
