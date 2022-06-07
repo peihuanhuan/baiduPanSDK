@@ -4,6 +4,7 @@ import net.peihuan.baiduPanSDK.config.BaiduPanProperties
 import net.peihuan.baiduPanSDK.exception.BaiduPanException
 import net.peihuan.baiduPanSDK.domain.dto.CreateResponseDTO
 import net.peihuan.baiduPanSDK.domain.dto.PrecreateResponseDTO
+import net.peihuan.baiduPanSDK.domain.dto.ShareResponseDTO
 import net.peihuan.baiduPanSDK.service.BaiduService
 import net.peihuan.baiduPanSDK.service.PanService
 import net.peihuan.baiduPanSDK.service.remote.BaiduPanRemoteService
@@ -12,12 +13,30 @@ import java.io.File
 import java.io.FileInputStream
 
 class PanServiceImpl(
-    private val baiduPanRemoteService: BaiduPanRemoteService,
     private val baiduService: BaiduService,
     private val baiduPanProperties: BaiduPanProperties,
 ) : PanService {
 
+
+
+    private val baiduPanRemoteService = BaiduPanRemoteService(baiduService.getOkHttpClient())
+
+
     private val part_max_size: Int = 4 * 1024 * 1024
+
+    override fun shareFiles(userId: String, fids: List<Long>, period: Int, desc: String): ShareResponseDTO {
+        if (baiduPanProperties.shareThirdId == null || baiduPanProperties.shareSecret.isNullOrBlank()) {
+            throw BaiduPanException("没有配置 shareThirdId 或 shareSecret，无法分享")
+        }
+        val accessToken = baiduService.getAccessToken(userId)
+
+        val schannel = 4
+        val sign = "${baiduPanProperties.shareThirdId}${fids}$schannel${baiduPanProperties.shareSecret}".md5()
+
+        return baiduPanRemoteService.share(accessToken = accessToken, schannel = schannel, third_type = baiduPanProperties.shareThirdId!!,
+            period = period, fid_list = fids, csign = sign, description = desc
+        )
+    }
 
     override fun uploadFile(userId: String, path: String, file: File): CreateResponseDTO {
         val encodePath = baiduPanProperties.rootDir + path
@@ -41,7 +60,7 @@ class PanServiceImpl(
             size = file.length(),
             block_list = blockList
         )
-        if (createResponse.fs_id.isBlank()) {
+        if (createResponse.fs_id == 0L) {
             throw BaiduPanException("文件合并失败，错误码 " + createResponse.errno)
         }
         return createResponse

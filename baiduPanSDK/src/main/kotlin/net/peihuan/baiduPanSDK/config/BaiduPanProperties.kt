@@ -10,5 +10,8 @@ class BaiduPanProperties(){
         lateinit var deviceId: String
         lateinit var clientSecret: String
         lateinit var rootDir: String
+        var shareSecret: String? = null
+
+        var shareThirdId: Int? = null
 }
 

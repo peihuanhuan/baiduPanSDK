@@ -24,7 +24,7 @@ class PanTest {
 
     @Test
     fun test_getToken(){
-        val x  = baiduService.getTokenByCode("1","0fb8ab7d6decbdb52b628ea0a39f8165", "http://baidupan.dejavuu.cn")
+        val x  = baiduService.getTokenByCode("1","6eedb80e7befd6547de37fc091f917fa", "http://baidupan.dejavuu.cn")
         println(x)
     }
 
@@ -32,7 +32,11 @@ class PanTest {
     @Test
     fun test_upload() {
 //        panService.uploadFile("filename.docx", File("C:\\Users\\Administrator\\Desktop\\裴欢_Java后端_简历.docx"))
-        val x = baiduService.getPanService().uploadFile("1","xxx.exe", File("C:\\Users\\Administrator\\Desktop\\tieba_tool\\chromedriver.exe"))
-
+//        baiduService.getConfigStorage().setRefreshToken("1", "122.276dae353bcddf320eabd84a31cd1d74.Ym81okSHrBgyxHPssG02IthTRVLgDEy4gzWgYMp.mU6tlg",1000)
+        baiduService.getConfigStorage().updateAccessToken("1", "121.f8e08d627710f651801a01ae45da0389.YgWnPC6vCkFNVNuba1KtJCKlsGiwZQ4rKhGhsyx.1R9Ynw", 100000)
+        println(baiduService.getAccessToken("1"))
+//        val x = baiduService.getPanService().uploadFile("1","反反复复/牛啊.mp3", File("C:\\Users\\Administrator\\Desktop\\【双语熟Vox Akuma】daddy读...1138-20211228-012650.mp3"))
+        val yy = baiduService.getPanService().shareFiles("1", listOf(606478106687463), 1)
+        println(yy)
     }
 }

@@ -3,10 +3,7 @@ package net.peihuan.baiduPanSDK.service.remote
 import com.google.gson.Gson
 import mu.KotlinLogging
 import net.peihuan.baiduPanSDK.config.BaiduPanProperties
-import net.peihuan.baiduPanSDK.domain.dto.CreateResponseDTO
-import net.peihuan.baiduPanSDK.domain.dto.PrecreateResponseDTO
-import net.peihuan.baiduPanSDK.domain.dto.RtypeEnum
-import net.peihuan.baiduPanSDK.domain.dto.UploadResponseDTO
+import net.peihuan.baiduPanSDK.domain.dto.*
 import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType.Companion.toMediaType
@@ -19,12 +16,19 @@ class BaiduPanRemoteService(
     private val okHttpClient: OkHttpClient,
 ) {
 
-    private val gson =  Gson()
+    private val gson = Gson()
 
     private val BASE_URL = "http://pan.baidu.com"
 
 
-    fun precreate(accessToken: String, path: String, size:Long, isdir:Boolean, block_list: List<String>, rtype: RtypeEnum = RtypeEnum.RENAME): PrecreateResponseDTO {
+    fun precreate(
+        accessToken: String,
+        path: String,
+        size: Long,
+        isdir: Boolean,
+        block_list: List<String>,
+        rtype: RtypeEnum = RtypeEnum.RENAME
+    ): PrecreateResponseDTO {
 
         val url = "${BASE_URL}/rest/2.0/xpan/file".toHttpUrlOrNull()!!.newBuilder()
             .addQueryParameter("method", "precreate")
@@ -50,7 +54,13 @@ class BaiduPanRemoteService(
 
     }
 
-    fun superfile2(accessToken: String, path: String, uploadid: String, partseq:Int, file: ByteArray): UploadResponseDTO {
+    fun superfile2(
+        accessToken: String,
+        path: String,
+        uploadid: String,
+        partseq: Int,
+        file: ByteArray
+    ): UploadResponseDTO {
 
         val url = "https://d.pcs.baidu.com/rest/2.0/pcs/superfile2".toHttpUrlOrNull()!!.newBuilder()
             .addQueryParameter("method", "upload")
@@ -75,7 +85,15 @@ class BaiduPanRemoteService(
     }
 
 
-    fun create(accessToken: String, path: String, size:Long, uploadid: String, isdir:Boolean, block_list: List<String>, rtype: RtypeEnum = RtypeEnum.RENAME): CreateResponseDTO {
+    fun create(
+        accessToken: String,
+        path: String,
+        size: Long,
+        uploadid: String,
+        isdir: Boolean,
+        block_list: List<String>,
+        rtype: RtypeEnum = RtypeEnum.RENAME
+    ): CreateResponseDTO {
 
         val url = "${BASE_URL}/rest/2.0/xpan/file".toHttpUrlOrNull()!!.newBuilder()
             .addQueryParameter("method", "create")
@@ -100,6 +118,38 @@ class BaiduPanRemoteService(
         val json = response.body?.string()
         return gson.fromJson(json, CreateResponseDTO::class.java)
 
+    }
+
+    fun share(
+        accessToken: String,
+        schannel: Int,
+        third_type: Int,
+        csign: String,
+        period: Int,
+        fid_list: List<Long>,
+        description: String = "",
+    ): ShareResponseDTO {
+        val url = "${BASE_URL}/rest/2.0/xpan/share/set".toHttpUrlOrNull()!!.newBuilder()
+            .addQueryParameter("method", "create")
+            .addQueryParameter("access_token", accessToken)
+            .build()
+
+        val requestBody: RequestBody = FormBody.Builder()
+            .add("fid_list", gson.toJson(fid_list))
+            .add("schannel", schannel.toString())
+            .add("period", period.toString())
+            .add("third_type", third_type.toString())
+            .add("description", description)
+            .add("csign", csign)
+            .build()
+        val request = Request.Builder()
+            .url(url)
+            .post(requestBody)
+            .build()
+
+        val response = okHttpClient.newCall(request).execute()
+        val json = response.body?.string()
+        return gson.fromJson(json, ShareResponseDTO::class.java)
     }
 
 }

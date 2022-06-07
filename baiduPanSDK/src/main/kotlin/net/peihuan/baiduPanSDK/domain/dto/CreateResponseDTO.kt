@@ -2,7 +2,7 @@ package net.peihuan.baiduPanSDK.domain.dto
 
 data class CreateResponseDTO(
         val errno : Int,
-        val fs_id: String,
+        val fs_id: Long,
         val md5: String,
         val server_filename: String,
         val category:Int,

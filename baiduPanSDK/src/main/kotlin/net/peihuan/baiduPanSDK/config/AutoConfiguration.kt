@@ -1,11 +1,7 @@
 package net.peihuan.baiduPanSDK.config
 
 import net.peihuan.baiduPanSDK.service.BaiduService
-import net.peihuan.baiduPanSDK.service.impl.BaiduOAuthConfigServiceImpl
 import net.peihuan.baiduPanSDK.service.impl.BaiduServiceImpl
-import net.peihuan.baiduPanSDK.service.impl.PanServiceImpl
-import net.peihuan.baiduPanSDK.service.remote.BaiduOAuthRemoteService
-import net.peihuan.baiduPanSDK.service.remote.BaiduPanRemoteService
 import okhttp3.OkHttpClient
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.EnableConfigurationProperties
