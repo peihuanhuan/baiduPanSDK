@@ -1,4 +1,4 @@
-package net.peihuan.baiduPanSDK.feign.dto
+package net.peihuan.baiduPanSDK.domain.dto
 
 enum class RtypeEnum(val code:String, msg: String) {
     RETURN_ERROR("0", "不进行重命名，若云端存在同名文件返回错误"),

@@ -1,4 +1,4 @@
-package net.peihuan.baiduPanSDK.feign.dto
+package net.peihuan.baiduPanSDK.domain.dto
 
 data class CreateResponseDTO(
         val errno : Int,

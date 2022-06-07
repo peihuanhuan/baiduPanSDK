@@ -1,11 +1,12 @@
 package net.peihuan.baiduPanSDK.config
 
-import net.peihuan.baiduPanSDK.service.BaiduOauthService
-import net.peihuan.baiduPanSDK.service.PanService
+import net.peihuan.baiduPanSDK.service.BaiduService
+import net.peihuan.baiduPanSDK.service.impl.BaiduOAuthConfigServiceImpl
+import net.peihuan.baiduPanSDK.service.impl.BaiduServiceImpl
+import net.peihuan.baiduPanSDK.service.impl.PanServiceImpl
 import net.peihuan.baiduPanSDK.service.remote.BaiduOAuthRemoteService
 import net.peihuan.baiduPanSDK.service.remote.BaiduPanRemoteService
 import okhttp3.OkHttpClient
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
@@ -31,19 +32,7 @@ class AutoConfiguration() {
 
     @Bean
     @ConditionalOnMissingBean
-    fun baiduOAuthRemoteService(properties: BaiduPanProperties): BaiduOAuthRemoteService {
-        return BaiduOAuthRemoteService(okHttpClient(), properties)
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    fun baiduPanRemoteService(properties: BaiduPanProperties): BaiduPanRemoteService {
-        return BaiduPanRemoteService(okHttpClient(), properties)
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    fun panService(properties: BaiduPanProperties): PanService {
-        return PanService(baiduPanRemoteService(properties), BaiduOauthService(baiduOAuthRemoteService(properties)), properties)
+    fun baiduService(okHttpClient: OkHttpClient, properties: BaiduPanProperties): BaiduService {
+        return BaiduServiceImpl(properties, okHttpClient)
     }
 }

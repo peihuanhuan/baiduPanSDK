@@ -3,10 +3,10 @@ package net.peihuan.baiduPanSDK.service.remote
 import com.google.gson.Gson
 import mu.KotlinLogging
 import net.peihuan.baiduPanSDK.config.BaiduPanProperties
-import net.peihuan.baiduPanSDK.feign.dto.CreateResponseDTO
-import net.peihuan.baiduPanSDK.feign.dto.PrecreateResponseDTO
-import net.peihuan.baiduPanSDK.feign.dto.RtypeEnum
-import net.peihuan.baiduPanSDK.feign.dto.UploadResponseDTO
+import net.peihuan.baiduPanSDK.domain.dto.CreateResponseDTO
+import net.peihuan.baiduPanSDK.domain.dto.PrecreateResponseDTO
+import net.peihuan.baiduPanSDK.domain.dto.RtypeEnum
+import net.peihuan.baiduPanSDK.domain.dto.UploadResponseDTO
 import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType.Companion.toMediaType
@@ -17,7 +17,6 @@ import java.io.File
 
 class BaiduPanRemoteService(
     private val okHttpClient: OkHttpClient,
-    private val baiduPanProperties: BaiduPanProperties
 ) {
 
     private val gson =  Gson()
@@ -31,11 +30,6 @@ class BaiduPanRemoteService(
             .addQueryParameter("method", "precreate")
             .addQueryParameter("access_token", accessToken)
             .build()
-
-
-//        val map = mapOf("path" to path, "size" to size.toString(), "isdir" to if (isdir) "1" else "0", "block_list" to block_list, "autoinit" to "1", "rtype" to rtype.code)
-//
-//        val x = gson.toJson(map).toRequestBody("application/json".toMediaType())
 
         val requestBody: RequestBody = FormBody.Builder()
             .add("path", path)
@@ -68,12 +62,7 @@ class BaiduPanRemoteService(
             .build()
 
 
-        val x: RequestBody = RequestBody.create("application/octet-stream".toMediaTypeOrNull(), file)
-//        val requestBody: RequestBody = MultipartBody.Builder()
-//            .addFormDataPart("file", "file", x)
-//            .build()
         val requestBody: RequestBody = RequestBody.create("text/plain;charset=utf-8".toMediaType(), file)
-
         val request = Request.Builder()
             .url(url)
             .put(requestBody)

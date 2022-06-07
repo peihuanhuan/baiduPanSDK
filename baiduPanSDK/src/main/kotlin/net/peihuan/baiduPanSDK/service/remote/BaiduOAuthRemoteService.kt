@@ -3,12 +3,10 @@ package net.peihuan.baiduPanSDK.service.remote
 import com.google.gson.Gson
 import mu.KotlinLogging
 import net.peihuan.baiduPanSDK.config.BaiduPanProperties
-import net.peihuan.baiduPanSDK.feign.dto.AuthorizeResponseDTO
-import okhttp3.HttpUrl
+import net.peihuan.baiduPanSDK.domain.dto.AuthorizeResponseDTO
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import java.net.URLEncoder
 
 
 class BaiduOAuthRemoteService(
@@ -16,7 +14,6 @@ class BaiduOAuthRemoteService(
     private val baiduPanProperties: BaiduPanProperties
 ) {
 
-    private val log = KotlinLogging.logger {}
     private val gson =  Gson()
 
     private val BASE_URL = "http://openapi.baidu.com"
@@ -41,6 +38,26 @@ class BaiduOAuthRemoteService(
             .addQueryParameter("redirect_uri", redirectUrl)
             .addQueryParameter("client_secret", baiduPanProperties.clientSecret)
             .addQueryParameter("grant_type", "authorization_code")
+            .build()
+
+        val request = Request.Builder()
+            .url(url)
+            .get()
+            .build()
+
+        val response = okHttpClient.newCall(request).execute()
+
+        val json = response.body?.string()
+        return gson.fromJson(json, AuthorizeResponseDTO::class.java)
+
+    }
+
+    fun refreshToken(refreshToken: String): AuthorizeResponseDTO {
+        val url = "${BASE_URL}/oauth/2.0/token".toHttpUrlOrNull()!!.newBuilder()
+            .addQueryParameter("client_id", baiduPanProperties.clientId)
+            .addQueryParameter("refresh_token", refreshToken)
+            .addQueryParameter("client_secret", baiduPanProperties.clientSecret)
+            .addQueryParameter("grant_type", "refresh_token")
             .build()
 
         val request = Request.Builder()
