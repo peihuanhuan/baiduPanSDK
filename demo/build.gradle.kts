@@ -23,6 +23,7 @@ dependencies {
 //	implementation("com.squareup.okhttp3:okhttp:4.10.0-RC1")
 
     implementation(project(":baiduPanSDK"))
+//    implementation("net.peihuan:baidu-pan-starter:0.0.1-SNAPSHOT")
 
     implementation("io.github.microutils:kotlin-logging:2.0.11")
 
