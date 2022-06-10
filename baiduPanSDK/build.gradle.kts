@@ -56,8 +56,9 @@ java {
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
-            groupId = "net.peihuan"
+            groupId = "com.github.peihuanhuan"
             artifactId = "baidu-pan-sdk"
+            version = project.version.toString()
             from(components["java"])
 
         }
