@@ -18,10 +18,6 @@ repositories {
     mavenCentral()
 }
 
-tasks.getByName<Jar>("jar") {
-    enabled = false
-}
-
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
@@ -62,8 +58,7 @@ publishing {
         create<MavenPublication>("mavenJava") {
             groupId = "net.peihuan"
             artifactId = "baidu-pan-sdk"
-            from(components["kotlin"])
-
+            from(components["java"])
         }
     }
 }
