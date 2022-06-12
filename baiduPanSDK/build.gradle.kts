@@ -11,7 +11,7 @@ plugins {
 
 
 group = "net.peihuan"
-version = "0.0.1-SNAPSHOT"
+version = "0.0.2-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
@@ -45,7 +45,11 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-
+// 去除 jar plain 后缀
+tasks.getByName<Jar>("jar") {
+    enabled = true
+    archiveClassifier.set("")
+}
 
 java {
     withSourcesJar()
@@ -97,6 +101,11 @@ publishing {
             val releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
             val snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
             url = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl)
+
+            credentials {
+                username = findProperty("ossrhUsername").toString()
+                password = findProperty("ossrhPassword").toString()
+            }
         }
     }
 }
