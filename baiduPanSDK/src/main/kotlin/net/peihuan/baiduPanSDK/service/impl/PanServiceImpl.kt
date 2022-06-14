@@ -38,6 +38,10 @@ class PanServiceImpl(
         )
     }
 
+    override fun filemetas(userId: String, fsids: List<Long>) {
+
+    }
+
     override fun uploadFile(userId: String, path: String, file: File): CreateResponseDTO {
         val encodePath = baiduPanProperties.rootDir.removeSuffix("/") + "/" + path.removePrefix("/")
         val accessToken = baiduService.getAccessToken(userId)
