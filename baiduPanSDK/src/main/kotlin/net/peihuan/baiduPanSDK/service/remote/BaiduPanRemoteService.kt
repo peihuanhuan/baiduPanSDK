@@ -156,25 +156,26 @@ class BaiduPanRemoteService(
     fun filemetas(
         accessToken: String,
         dlink: Int,
-        path: String,
+        path: String?,
         fid_list: List<Long>,
-    ): ShareResponseDTO {
-        val url = "${BASE_URL}/rest/2.0/xpan/multimedia".toHttpUrlOrNull()!!.newBuilder()
+    ): FilemetasResp {
+        val urlBuilder = "${BASE_URL}/rest/2.0/xpan/multimedia".toHttpUrlOrNull()!!.newBuilder()
             .addQueryParameter("method", "filemetas")
             .addQueryParameter("access_token", accessToken)
             .addQueryParameter("fsids", gson.toJson(fid_list))
             .addQueryParameter("dlink", dlink.toString())
-            .addQueryParameter("path", path)
-            .build()
+        if (path == null) {
+            urlBuilder.addQueryParameter("path", path)
+        }
 
         val request = Request.Builder()
-            .url(url)
+            .url(urlBuilder.build())
             .get()
             .build()
 
         val response = okHttpClient.newCall(request).execute()
         val json = response.body?.string()
-        return gson.fromJson(json, ShareResponseDTO::class.java)
+        return gson.fromJson(json, FilemetasResp::class.java)
     }
 
 }

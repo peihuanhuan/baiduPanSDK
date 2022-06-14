@@ -1,10 +1,8 @@
 package net.peihuan.baiduPanSDK.service.impl
 
 import net.peihuan.baiduPanSDK.config.BaiduPanProperties
+import net.peihuan.baiduPanSDK.domain.dto.*
 import net.peihuan.baiduPanSDK.exception.BaiduPanException
-import net.peihuan.baiduPanSDK.domain.dto.CreateResponseDTO
-import net.peihuan.baiduPanSDK.domain.dto.PrecreateResponseDTO
-import net.peihuan.baiduPanSDK.domain.dto.ShareResponseDTO
 import net.peihuan.baiduPanSDK.service.BaiduService
 import net.peihuan.baiduPanSDK.service.PanService
 import net.peihuan.baiduPanSDK.service.remote.BaiduPanRemoteService
@@ -38,8 +36,10 @@ class PanServiceImpl(
         )
     }
 
-    override fun filemetas(userId: String, fsids: List<Long>) {
-
+    override fun filemetas(userId: String, fsids: List<Long>, path: String?, dlink: Int): List<Filemeta> {
+        val accessToken = baiduService.getAccessToken(userId)
+        val resp = baiduPanRemoteService.filemetas(accessToken = accessToken, fid_list = fsids, path = path, dlink =  dlink)
+        return resp.list?: emptyList()
     }
 
     override fun uploadFile(userId: String, path: String, file: File): CreateResponseDTO {
