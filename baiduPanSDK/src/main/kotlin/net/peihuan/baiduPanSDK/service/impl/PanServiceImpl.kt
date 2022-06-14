@@ -39,7 +39,7 @@ class PanServiceImpl(
     }
 
     override fun uploadFile(userId: String, path: String, file: File): CreateResponseDTO {
-        val encodePath = baiduPanProperties.rootDir + path
+        val encodePath = baiduPanProperties.rootDir.removeSuffix("/") + "/" + path.removePrefix("/")
         val accessToken = baiduService.getAccessToken(userId)
         val blockList = getBlockList(file)
         val precreate = baiduPanRemoteService.precreate(
