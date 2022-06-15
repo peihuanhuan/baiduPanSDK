@@ -9,7 +9,7 @@ data class Filemeta(
     val height: Int?,
     val isdir: Int,
     val md5: String,
-    val oper_id: Int,
+    val oper_id: Long,
     val path: String,
     val server_ctime: Int,
     val server_mtime: Int,
