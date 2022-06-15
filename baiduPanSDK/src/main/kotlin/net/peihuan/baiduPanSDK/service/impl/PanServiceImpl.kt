@@ -1,5 +1,6 @@
 package net.peihuan.baiduPanSDK.service.impl
 
+import com.google.gson.Gson
 import net.peihuan.baiduPanSDK.config.BaiduPanProperties
 import net.peihuan.baiduPanSDK.domain.dto.*
 import net.peihuan.baiduPanSDK.exception.BaiduPanException
@@ -16,6 +17,8 @@ class PanServiceImpl(
 ) : PanService {
 
 
+    private val gson =  Gson()
+
 
     private val baiduPanRemoteService = BaiduPanRemoteService(baiduService.getOkHttpClient())
 
@@ -29,7 +32,7 @@ class PanServiceImpl(
         val accessToken = baiduService.getAccessToken(userId)
 
         val schannel = 4
-        val sign = "${baiduPanProperties.shareThirdId}${fids}$schannel${baiduPanProperties.shareSecret}".md5()
+        val sign = "${baiduPanProperties.shareThirdId}${gson.toJson(fids)}$schannel${baiduPanProperties.shareSecret}".md5()
 
         return baiduPanRemoteService.share(accessToken = accessToken, schannel = schannel, third_type = baiduPanProperties.shareThirdId!!,
             period = period, fid_list = fids, csign = sign, description = desc
