@@ -18,13 +18,14 @@ class BaiduOAuthRemoteService(
 
     private val BASE_URL = "http://openapi.baidu.com"
 
-    fun authorize(redirectUrl: String): String {
+    fun authorize(redirectUrl: String, state: String? = null): String {
 
         val url = "${BASE_URL}/oauth/2.0/authorize".toHttpUrlOrNull()!!.newBuilder()
             .addQueryParameter("response_type", "code")
             .addQueryParameter("client_id", baiduPanProperties.clientId)
             .addQueryParameter("redirect_uri", redirectUrl)
             .addQueryParameter("scope", "basic,netdisk")
+            .addQueryParameter("state", state)
             .addQueryParameter("device_id", baiduPanProperties.deviceId)
             .build()
 

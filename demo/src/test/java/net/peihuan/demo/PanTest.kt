@@ -24,7 +24,7 @@ class PanTest {
 
     @Test
     fun test_getToken(){
-        val x  = baiduService.getTokenByCode("1","6eedb80e7befd6547de37fc091f917fa", "http://baidupan.dejavuu.cn")
+        val x  = baiduService.getTokenByCode("1","b7c366a9d73121a76b9a32ee313ec460", "http://baidupan.dejavuu.cn")
         println(x)
     }
 

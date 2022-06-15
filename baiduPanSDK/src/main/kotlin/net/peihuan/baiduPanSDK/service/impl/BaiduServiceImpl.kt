@@ -43,8 +43,8 @@ class BaiduServiceImpl(
     }
 
 
-    override fun getAuthorizeUrl(redirectUrl: String): String {
-        return baiduOAuthRemoteService.authorize(redirectUrl)
+    override fun getAuthorizeUrl(redirectUrl: String, state:String?): String {
+        return baiduOAuthRemoteService.authorize(redirectUrl, state)
     }
 
     override fun getTokenByCode(userId: String, code: String, redirectUrl: String): String {

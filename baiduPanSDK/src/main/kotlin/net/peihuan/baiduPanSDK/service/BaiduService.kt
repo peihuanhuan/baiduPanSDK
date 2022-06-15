@@ -4,7 +4,7 @@ import net.peihuan.baiduPanSDK.domain.dto.AuthorizeResponseDTO
 import okhttp3.OkHttpClient
 
 interface BaiduService {
-    fun getAuthorizeUrl(redirectUrl: String): String
+    fun getAuthorizeUrl(redirectUrl: String, state:String?=null): String
 
     fun getAccessToken(userId: String): String
 
