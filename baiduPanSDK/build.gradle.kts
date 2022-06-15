@@ -73,7 +73,7 @@ publishing {
             pom {
                 name.set("peihuanhuan/baidu-pan-starter")
                 description.set("百度云盘 Java SDK")
-                url.set("https://github.com/peihuanhuan/baidu-pan-starter")
+                url.set("https://github.com/peihuanhuan/bbaiduPanSDK")
                 licenses {
                     license {
                         name.set("The Apache License, Version 2.0")
@@ -89,9 +89,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection.set("scm:git://github.com/peihuanhuan/baidu-pan-starter.git")
-                    developerConnection.set("scm:git://github.com/peihuanhuan/baidu-pan-starter.git")
-                    url.set("git://github.com/peihuanhuan/baidu-pan-starter.git")
+                    connection.set("scm:git://github.com/peihuanhuan/baiduPanSDK.git")
+                    developerConnection.set("scm:git://github.com/peihuanhuan/baiduPanSDK.git")
+                    url.set("git://github.com/peihuanhuan/baiduPanSDK.git")
                 }
             }
         }
