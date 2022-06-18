@@ -15,5 +15,16 @@ data class Filemeta(
     val server_mtime: Int,
     val size: Int,
     val thumbs: Thumbs?,
-    val width: Int?
+    val width: Int?,
+
+
+    val dir_empty: Int?,
+    val empty: Int?,
+    val local_ctime: Int?,
+    val local_mtime: Int?,
+    val privacy: Int?,
+    val server_atime: Int?,
+    val server_filename: String?,
+    val share: Int?,
+    val unlist: Int?
 )

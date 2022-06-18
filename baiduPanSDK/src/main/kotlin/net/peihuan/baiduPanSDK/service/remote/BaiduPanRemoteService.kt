@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import mu.KotlinLogging
 import net.peihuan.baiduPanSDK.config.BaiduPanProperties
 import net.peihuan.baiduPanSDK.domain.dto.*
+import net.peihuan.baiduPanSDK.exception.BaiduPanException
 import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType.Companion.toMediaType
@@ -186,7 +187,7 @@ class BaiduPanRemoteService(
         start: Int = 0,
         limit: Int = 1000,
         folder: Int = 0,
-    ): FilemetasResp {
+    ): List<Filemeta> {
         val urlBuilder = "${BASE_URL}/rest/2.0/xpan/file".toHttpUrlOrNull()!!.newBuilder()
             .addQueryParameter("method", "list")
             .addQueryParameter("access_token", accessToken)
@@ -204,7 +205,11 @@ class BaiduPanRemoteService(
 
         val response = okHttpClient.newCall(request).execute()
         val json = response.body?.string()
-        return gson.fromJson(json, FilemetasResp::class.java)
+        val resp = gson.fromJson(json, ListFilesResp::class.java)
+        if (resp.errno != 0) {
+            throw BaiduPanException("查询列表失败 resp: $json")
+        }
+        return resp.list ?: emptyList()
     }
 
 }

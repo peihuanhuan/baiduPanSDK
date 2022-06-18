@@ -17,7 +17,7 @@ class PanServiceImpl(
 ) : PanService {
 
 
-    private val gson =  Gson()
+    private val gson = Gson()
 
 
     private val baiduPanRemoteService = BaiduPanRemoteService(baiduService.getOkHttpClient())
@@ -32,17 +32,34 @@ class PanServiceImpl(
         val accessToken = baiduService.getAccessToken(userId)
 
         val schannel = 4
-        val sign = "${baiduPanProperties.shareThirdId}${gson.toJson(fids)}$schannel${baiduPanProperties.shareSecret}".md5()
+        val sign =
+            "${baiduPanProperties.shareThirdId}${gson.toJson(fids)}$schannel${baiduPanProperties.shareSecret}".md5()
 
-        return baiduPanRemoteService.share(accessToken = accessToken, schannel = schannel, third_type = baiduPanProperties.shareThirdId!!,
+        return baiduPanRemoteService.share(
+            accessToken = accessToken, schannel = schannel, third_type = baiduPanProperties.shareThirdId!!,
             period = period, fid_list = fids, csign = sign, description = desc
         )
     }
 
     override fun filemetas(userId: String, fsids: List<Long>, path: String?, dlink: Int): List<Filemeta> {
         val accessToken = baiduService.getAccessToken(userId)
-        val resp = baiduPanRemoteService.filemetas(accessToken = accessToken, fid_list = fsids, path = path, dlink =  dlink)
-        return resp.list?: emptyList()
+        val resp =
+            baiduPanRemoteService.filemetas(accessToken = accessToken, fid_list = fsids, path = path, dlink = dlink)
+        return resp.list ?: emptyList()
+    }
+
+    override fun listFiles(userId: String, dir: String, order: String, desc: Int, start: Int, limit: Int, folder: Int, ): List<Filemeta> {
+        val accessToken = baiduService.getAccessToken(userId)
+        val listFiles = baiduPanRemoteService.listFiles(
+            accessToken = accessToken,
+            order = order,
+            desc = desc,
+            start = start,
+            limit = limit,
+            folder = folder,
+            dir = dir
+        )
+        return listFiles
     }
 
     override fun uploadFile(userId: String, path: String, file: File, rtype: RtypeEnum): CreateResponseDTO {
