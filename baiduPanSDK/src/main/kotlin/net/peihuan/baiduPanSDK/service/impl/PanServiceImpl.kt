@@ -57,6 +57,9 @@ class PanServiceImpl(
             block_list = blockList,
             rtype = rtype
         )
+        if (precreate.uploadid == null) {
+            throw BaiduPanException("上传失败 errno" + precreate.errno)
+        }
 
         upload(file, accessToken, encodePath, precreate)
 
@@ -89,7 +92,7 @@ class PanServiceImpl(
             baiduPanRemoteService.superfile2(
                 accessToken = accessToken,
                 path = path,
-                uploadid = precreate.uploadid,
+                uploadid = precreate.uploadid!!,
                 partseq = partseq++,
                 file = buf.copyOfRange(0, length)
             )
