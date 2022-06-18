@@ -57,7 +57,7 @@ class PanServiceImpl(
             start = start,
             limit = limit,
             folder = folder,
-            dir = dir
+            dir = baiduPanProperties.rootDir.removeSuffix("/") + "/" + dir.removePrefix("/")
         )
         return listFiles
     }
