@@ -45,7 +45,7 @@ class PanServiceImpl(
         return resp.list?: emptyList()
     }
 
-    override fun uploadFile(userId: String, path: String, file: File): CreateResponseDTO {
+    override fun uploadFile(userId: String, path: String, file: File, rtype: RtypeEnum): CreateResponseDTO {
         val encodePath = baiduPanProperties.rootDir.removeSuffix("/") + "/" + path.removePrefix("/")
         val accessToken = baiduService.getAccessToken(userId)
         val blockList = getBlockList(file)
@@ -54,7 +54,8 @@ class PanServiceImpl(
             path = encodePath,
             size = file.length(),
             isdir = false,
-            block_list = blockList
+            block_list = blockList,
+            rtype = rtype
         )
 
         upload(file, accessToken, encodePath, precreate)
@@ -65,7 +66,8 @@ class PanServiceImpl(
             path = encodePath,
             isdir = false,
             size = file.length(),
-            block_list = blockList
+            block_list = blockList,
+            rtype = rtype
         )
         if (createResponse.fs_id == 0L) {
             throw BaiduPanException("文件合并失败，错误码 " + createResponse.errno)

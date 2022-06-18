@@ -178,4 +178,33 @@ class BaiduPanRemoteService(
         return gson.fromJson(json, FilemetasResp::class.java)
     }
 
+    fun listFiles(
+        accessToken: String,
+        dir	: String,
+        order: String = "name",
+        desc: Int = 1,
+        start: Int = 0,
+        limit: Int = 1000,
+        folder: Int = 0,
+    ): FilemetasResp {
+        val urlBuilder = "${BASE_URL}/rest/2.0/xpan/file".toHttpUrlOrNull()!!.newBuilder()
+            .addQueryParameter("method", "list")
+            .addQueryParameter("access_token", accessToken)
+            .addQueryParameter("dir", dir)
+            .addQueryParameter("order", order)
+            .addQueryParameter("desc", desc.toString())
+            .addQueryParameter("start", start.toString())
+            .addQueryParameter("limit", limit.toString())
+            .addQueryParameter("folder", folder.toString())
+
+        val request = Request.Builder()
+            .url(urlBuilder.build())
+            .get()
+            .build()
+
+        val response = okHttpClient.newCall(request).execute()
+        val json = response.body?.string()
+        return gson.fromJson(json, FilemetasResp::class.java)
+    }
+
 }
