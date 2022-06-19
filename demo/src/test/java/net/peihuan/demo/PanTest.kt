@@ -35,7 +35,7 @@ class PanTest {
         baiduService.getConfigStorage().updateAccessToken("1", "121.f8e08d627710f651801a01ae45da0389.YgWnPC6vCkFNVNuba1KtJCKlsGiwZQ4rKhGhsyx.1R9Ynw", 100000)
         println(baiduService.getAccessToken("1"))
 //        val x = baiduService.getPanService().uploadFile("1","反反复复/牛啊.mp3", File("C:\\Users\\Administrator\\Desktop\\【双语熟Vox Akuma】daddy读...1138-20211228-012650.mp3"))
-        val yy = baiduService.getPanService().uploadFile("1","【罗翔】先性侵然后谈恋爱还叫不叫性侵？.mp3", File("C:\\Users\\Administrator\\Desktop\\裴欢_Java后端_简历.docx"))
+        val yy = baiduService.getPanService().uploadFile("1","【白噪音|环境音】苏菲的帽子店 布料剪裁 羊皮卷尺 缝纫声 哈尔的移动城堡 吉卜力动画氛围音 背景音.mp3", File("C:\\Users\\Administrator\\Desktop\\裴欢_Java后端_简历.docx"))
         println(yy)
     }
 
@@ -47,7 +47,7 @@ class PanTest {
         baiduService.getConfigStorage().updateAccessToken("1", "121.f8e08d627710f651801a01ae45da0389.YgWnPC6vCkFNVNuba1KtJCKlsGiwZQ4rKhGhsyx.1R9Ynw", 100000)
         println(baiduService.getAccessToken("1"))
 //        val x = baiduService.getPanService().uploadFile("1","反反复复/牛啊.mp3", File("C:\\Users\\Administrator\\Desktop\\【双语熟Vox Akuma】daddy读...1138-20211228-012650.mp3"))
-        val yy = baiduService.getPanService().shareFiles("1", listOf(451923872821456, 828853696603672  ), 1)
+        val yy = baiduService.getPanService().shareFiles("1", listOf(1053773202214064 ), 1)
         println(yy)
     }
 
@@ -56,7 +56,7 @@ class PanTest {
 
         baiduService.getConfigStorage().updateAccessToken("1", "121.f8e08d627710f651801a01ae45da0389.YgWnPC6vCkFNVNuba1KtJCKlsGiwZQ4rKhGhsyx.1R9Ynw", 100000)
         println(baiduService.getAccessToken("1"))
-        val yy = baiduService.getPanService().listFiles("1", dir = "/")
+        val yy = baiduService.getPanService().listFiles("1", dir = "oIWc_51xYURq_7jNCfrr40dc0q3Q")
         println(yy)
     }
 }
