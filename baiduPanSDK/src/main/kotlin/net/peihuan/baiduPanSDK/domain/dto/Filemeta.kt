@@ -13,7 +13,7 @@ data class Filemeta(
     val path: String,
     val server_ctime: Int,
     val server_mtime: Int,
-    val size: Int,
+    val size: Long,
     val thumbs: Thumbs?,
     val width: Int?,
 

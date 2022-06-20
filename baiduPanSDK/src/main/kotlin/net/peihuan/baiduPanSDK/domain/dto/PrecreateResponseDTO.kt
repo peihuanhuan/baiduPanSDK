@@ -5,6 +5,6 @@ data class PrecreateResponseDTO(
         val path: String,
         val uploadid: String?,
         val return_type : Int,
-        val block_list: List<Int>
-
+        val block_list: List<Int>,
+        val show_msg: String?
 )
