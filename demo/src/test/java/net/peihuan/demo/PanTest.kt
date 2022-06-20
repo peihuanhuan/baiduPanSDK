@@ -1,9 +1,6 @@
 package net.peihuan.demo
 
 import net.peihuan.baiduPanSDK.service.BaiduService
-import net.peihuan.baiduPanSDK.service.impl.PanServiceImpl
-import net.peihuan.baiduPanSDK.service.remote.BaiduOAuthRemoteService
-import net.peihuan.baiduPanSDK.service.remote.BaiduPanRemoteService
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -24,7 +21,7 @@ class PanTest {
 
     @Test
     fun test_getToken(){
-        val x  = baiduService.getTokenByCode("1","b7c366a9d73121a76b9a32ee313ec460", "http://baidupan.dejavuu.cn")
+        val x  = baiduService.getAccessToken("1","b7c366a9d73121a76b9a32ee313ec460", "http://baidupan.dejavuu.cn")
         println(x)
     }
 

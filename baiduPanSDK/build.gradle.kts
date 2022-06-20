@@ -73,7 +73,7 @@ publishing {
             pom {
                 name.set("peihuanhuan/baidu-pan-starter")
                 description.set("百度云盘 Java SDK")
-                url.set("https://github.com/peihuanhuan/bbaiduPanSDK")
+                url.set("https://github.com/peihuanhuan/baiduPanSDK")
                 licenses {
                     license {
                         name.set("The Apache License, Version 2.0")

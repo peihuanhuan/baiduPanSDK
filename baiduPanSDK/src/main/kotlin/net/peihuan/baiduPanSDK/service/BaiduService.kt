@@ -1,6 +1,5 @@
 package net.peihuan.baiduPanSDK.service
 
-import net.peihuan.baiduPanSDK.domain.dto.AuthorizeResponseDTO
 import okhttp3.OkHttpClient
 
 interface BaiduService {
@@ -8,7 +7,7 @@ interface BaiduService {
 
     fun getAccessToken(userId: String): String
 
-    fun getTokenByCode(userId: String, code: String, redirectUrl: String): String
+    fun getAccessToken(userId: String, code: String, redirectUrl: String): String
 
     fun setConfigStorage(storage: BaiduOAuthConfigStorage)
 

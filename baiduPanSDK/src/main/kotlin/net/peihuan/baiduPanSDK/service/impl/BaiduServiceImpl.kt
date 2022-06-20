@@ -47,7 +47,7 @@ class BaiduServiceImpl(
         return baiduOAuthRemoteService.authorize(redirectUrl, state)
     }
 
-    override fun getTokenByCode(userId: String, code: String, redirectUrl: String): String {
+    override fun getAccessToken(userId: String, code: String, redirectUrl: String): String {
         val token = baiduOAuthRemoteService.getToken(code, redirectUrl)
         configStorage.updateAccessToken(userId, token.access_token, token.expires_in)
         // 刷新 token 有效期 十年
