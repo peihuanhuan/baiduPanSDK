@@ -21,6 +21,8 @@ class BaiduPanRemoteService(
 
     private val BASE_URL = "http://pan.baidu.com"
 
+    private val log = KotlinLogging.logger {}
+
 
     fun precreate(
         accessToken: String,
@@ -81,6 +83,7 @@ class BaiduPanRemoteService(
 
         val response = okHttpClient.newCall(request).execute()
         val json = response.body?.string()
+        log.info("baidupan superfile2  resp:{} req: {}", json, url.toString())
         return gson.fromJson(json, UploadResponseDTO::class.java)
 
     }
