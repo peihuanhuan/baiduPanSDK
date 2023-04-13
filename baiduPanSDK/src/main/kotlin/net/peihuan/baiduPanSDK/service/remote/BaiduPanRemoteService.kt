@@ -3,6 +3,8 @@ package net.peihuan.baiduPanSDK.service.remote
 import com.google.gson.Gson
 import mu.KotlinLogging
 import net.peihuan.baiduPanSDK.config.BaiduPanProperties
+import net.peihuan.baiduPanSDK.domain.constant.AsyncModel
+import net.peihuan.baiduPanSDK.domain.constant.ManageFileOpera
 import net.peihuan.baiduPanSDK.domain.dto.*
 import net.peihuan.baiduPanSDK.exception.BaiduPanException
 import okhttp3.*
@@ -15,6 +17,8 @@ import java.io.File
 
 class BaiduPanRemoteService(
     private val okHttpClient: OkHttpClient,
+    private val baiduPanProperties: BaiduPanProperties
+
 ) {
 
     private val gson = Gson()
@@ -180,6 +184,41 @@ class BaiduPanRemoteService(
         val response = okHttpClient.newCall(request).execute()
         val json = response.body?.string()
         return gson.fromJson(json, FilemetasResp::class.java)
+    }
+
+    fun manageFile(
+            accessToken: String,
+            opera: ManageFileOpera,
+            async: AsyncModel,
+            filelist:List<Any>,
+            ondup: String = "override",
+    ): ManageFileResp {
+        val urlBuilder = "${BASE_URL}/rest/2.0/xpan/file".toHttpUrlOrNull()!!.newBuilder()
+                .addQueryParameter("method", "filemanager")
+                .addQueryParameter("access_token", accessToken)
+                .addQueryParameter("opera", opera.code)
+                .addQueryParameter("device_id", baiduPanProperties.deviceId)
+
+
+        val requestBody: RequestBody = FormBody.Builder()
+                .add("async", async.code)
+                .add("filelist", gson.toJson(filelist))
+                .add("ondup", ondup)
+                .build()
+
+        val request = Request.Builder()
+                .url(urlBuilder.build())
+                .post(requestBody)
+                .build()
+
+        val response = okHttpClient.newCall(request).execute()
+        val json = response.body?.string()
+
+        val resp = gson.fromJson(json, ManageFileResp::class.java)
+        if (resp.errno !=  0) {
+            log.error("manager file error: response: {}", json)
+        }
+        return resp
     }
 
     fun listFiles(

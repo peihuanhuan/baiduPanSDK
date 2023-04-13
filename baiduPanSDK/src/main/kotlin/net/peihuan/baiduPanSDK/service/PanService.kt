@@ -1,5 +1,7 @@
 package net.peihuan.baiduPanSDK.service
 
+import net.peihuan.baiduPanSDK.domain.constant.AsyncModel
+import net.peihuan.baiduPanSDK.domain.constant.ManageFileOpera
 import net.peihuan.baiduPanSDK.domain.dto.CreateResponseDTO
 import net.peihuan.baiduPanSDK.domain.dto.Filemeta
 import net.peihuan.baiduPanSDK.domain.dto.RtypeEnum
@@ -15,4 +17,6 @@ interface PanService {
     fun uploadFile(userId: String, path: String, file: File, rtype: RtypeEnum = RtypeEnum.RENAME): CreateResponseDTO
 
     fun shareFiles(userId: String, fids: List<Long>, period: Int, desc: String = ""): ShareResponseDTO
+
+    fun managerFile(userId: String, opera: ManageFileOpera, asyncModel: AsyncModel, fileList: List<Any>, ondup :String = "override"): Boolean
 }

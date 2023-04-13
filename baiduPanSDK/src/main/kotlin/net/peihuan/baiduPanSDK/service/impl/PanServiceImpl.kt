@@ -2,6 +2,8 @@ package net.peihuan.baiduPanSDK.service.impl
 
 import com.google.gson.Gson
 import net.peihuan.baiduPanSDK.config.BaiduPanProperties
+import net.peihuan.baiduPanSDK.domain.constant.AsyncModel
+import net.peihuan.baiduPanSDK.domain.constant.ManageFileOpera
 import net.peihuan.baiduPanSDK.domain.dto.*
 import net.peihuan.baiduPanSDK.exception.BaiduPanException
 import net.peihuan.baiduPanSDK.service.BaiduService
@@ -20,10 +22,25 @@ class PanServiceImpl(
     private val gson = Gson()
 
 
-    private val baiduPanRemoteService = BaiduPanRemoteService(baiduService.getOkHttpClient())
+    private val baiduPanRemoteService = BaiduPanRemoteService(baiduService.getOkHttpClient(), baiduPanProperties)
 
 
     private val part_max_size: Int = 4 * 1024 * 1024
+
+
+    override fun managerFile(userId: String, opera: ManageFileOpera, asyncModel: AsyncModel, fileList: List<Any>, ondup :String) : Boolean {
+        var finalList = fileList
+        if (opera == ManageFileOpera.DELETE) {
+            finalList = fileList.map { baiduPanProperties.rootDir.removeSuffix("/") + "/" + it.toString().removePrefix("/") }
+        }
+        // todo  copy rename
+
+
+        val accessToken = baiduService.getAccessToken(userId)
+
+        val response = baiduPanRemoteService.manageFile(accessToken, opera, asyncModel, finalList,ondup)
+        return response.errno == 0
+    }
 
     override fun shareFiles(userId: String, fids: List<Long>, period: Int, desc: String): ShareResponseDTO {
         if (baiduPanProperties.shareThirdId == null || baiduPanProperties.shareSecret.isNullOrBlank()) {
