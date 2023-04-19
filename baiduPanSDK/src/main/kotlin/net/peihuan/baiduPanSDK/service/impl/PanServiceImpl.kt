@@ -58,6 +58,39 @@ class PanServiceImpl(
         )
     }
 
+    override fun saveShareLink(userId: String, savePath: String, fs_ids: List<Long>, share: ShareResponseDTO) : SaveShareLinkResponseDTO {
+        val encodePath = baiduPanProperties.rootDir.removeSuffix("/") + "/" + savePath.removePrefix("/")
+
+        if (baiduPanProperties.shareThirdId == null || baiduPanProperties.shareSecret.isNullOrBlank()) {
+            throw BaiduPanException("没有配置 shareThirdId 或 shareSecret，无法分享")
+        }
+
+        val accessToken = baiduService.getAccessToken(userId)
+
+        val verifyResp = baiduPanRemoteService.verifyShareLink(accessToken = accessToken, shareid = share.shareid, pwd = share.pwd, uk = share.uk, redirect = 0, third_type = baiduPanProperties.shareThirdId!!)
+
+        var finalFids = fs_ids
+        if (finalFids.isEmpty()) {
+            val shareFiles = baiduPanRemoteService.getShareFiles(accessToken = accessToken,
+                    shareid = share.shareid,
+                    uk = share.uk,
+                    page = 1,
+                    num = 100,
+                    sekey = verifyResp.randsk
+            )
+            finalFids = shareFiles.list.map { it.fs_id }
+        }
+
+        return baiduPanRemoteService.saveShareLink(accessToken = accessToken,
+                shareid = share.shareid,
+                sekey = verifyResp.randsk,
+                async = 0,
+                from = share.uk,
+                path = encodePath,
+                fsidlist = finalFids)
+
+    }
+
     override fun filemetas(userId: String, fsids: List<Long>, path: String?, dlink: Int): List<Filemeta> {
         val accessToken = baiduService.getAccessToken(userId)
         val resp =
@@ -84,12 +117,12 @@ class PanServiceImpl(
         val accessToken = baiduService.getAccessToken(userId)
         val blockList = getBlockList(file)
         val precreate = baiduPanRemoteService.precreate(
-            accessToken = accessToken,
-            path = encodePath,
-            size = file.length(),
-            isdir = false,
-            block_list = blockList,
-            rtype = rtype
+                accessToken = accessToken,
+                path = encodePath,
+                size = file.length(),
+                isdir = false,
+                block_list = blockList,
+                rtype = rtype
         )
         if (precreate.uploadid == null) {
             throw BaiduPanException("上传失败 errno" + precreate.errno)
@@ -98,16 +131,38 @@ class PanServiceImpl(
         upload(file, accessToken, encodePath, precreate)
 
         val createResponse = baiduPanRemoteService.create(
-            accessToken = accessToken,
-            uploadid = precreate.uploadid,
-            path = encodePath,
-            isdir = false,
-            size = file.length(),
-            block_list = blockList,
-            rtype = rtype
+                accessToken = accessToken,
+                uploadid = precreate.uploadid,
+                path = encodePath,
+                isdir = false,
+                size = file.length(),
+                block_list = blockList,
+                rtype = rtype
         )
         if (createResponse.fs_id == 0L) {
             throw BaiduPanException("文件合并失败，错误码 " + createResponse.errno)
+        }
+        return createResponse
+    }
+
+    override fun createDir(userId: String, path: String, rtype: RtypeEnum): CreateResponseDTO {
+        val encodePath = baiduPanProperties.rootDir.removeSuffix("/") + "/" + path.removePrefix("/")
+        val accessToken = baiduService.getAccessToken(userId)
+        val createResponse = baiduPanRemoteService.create(
+                accessToken = accessToken,
+                uploadid = null,
+                path = encodePath,
+                isdir = true,
+                size = null,
+                block_list = null,
+                rtype = rtype
+        )
+        if (createResponse.errno == -8) {
+            // 文件或目录已存在
+            throw BaiduPanException("创建文件夹失败，文件或目录已存在 $path")
+        }
+        if (createResponse.fs_id == 0L) {
+            throw BaiduPanException("创建文件夹失败，错误码 " + createResponse.errno)
         }
         return createResponse
     }

@@ -13,6 +13,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
+import java.net.URLDecoder
 
 
 class BaiduPanRemoteService(
@@ -96,10 +97,10 @@ class BaiduPanRemoteService(
     fun create(
         accessToken: String,
         path: String,
-        size: Long,
-        uploadid: String,
+        size: Long?,
+        uploadid: String?,
         isdir: Boolean,
-        block_list: List<String>,
+        block_list: List<String> ? ,
         rtype: RtypeEnum = RtypeEnum.RENAME
     ): CreateResponseDTO {
 
@@ -110,10 +111,10 @@ class BaiduPanRemoteService(
 
         val requestBody: RequestBody = FormBody.Builder()
             .add("path", path)
-            .add("size", size.toString())
+            .apply { size?.let { this.add("size", size.toString()) } }
             .add("isdir", if (isdir) "1" else "0")
-            .add("block_list", gson.toJson(block_list))
-            .add("uploadid", uploadid)
+            .apply { block_list?.let { this.add("block_list", gson.toJson(block_list)) } }
+            .apply { uploadid?.let { this.add("uploadid", uploadid) } }
             .add("autoinit", "1")
             .add("rtype", rtype.code)
             .build()
@@ -158,6 +159,115 @@ class BaiduPanRemoteService(
         val response = okHttpClient.newCall(request).execute()
         val json = response.body?.string()
         return gson.fromJson(json, ShareResponseDTO::class.java)
+    }
+
+    fun verifyShareLink(
+            accessToken: String,
+            shareid: Long,
+            uk: Long,
+            pwd: String,
+            third_type: Int,
+            redirect: Int,
+    ): VerifyShareLinkResponseDTO {
+        val url = "${BASE_URL}/rest/2.0/xpan/share".toHttpUrlOrNull()!!.newBuilder()
+                .addQueryParameter("method", "verify")
+                .addQueryParameter("shareid", shareid.toString())
+                .addQueryParameter("uk", uk.toString())
+                .addQueryParameter("access_token", accessToken)
+                .build()
+
+        val requestBody: RequestBody = FormBody.Builder()
+                .add("pwd", pwd)
+                .add("third_type", third_type.toString())
+                .add("redirect", redirect.toString())
+                .build()
+        val request = Request.Builder()
+                .url(url)
+                .header("Referer", "pan.baidu.com")
+                .post(requestBody)
+                .build()
+
+        val response = okHttpClient.newCall(request).execute()
+        val json = response.body?.string()
+        val resp = gson.fromJson(json, VerifyShareLinkResponseDTO::class.java)
+        if (resp.errno !=  0) {
+            log.error("verify share link error: response: {}", json)
+        }
+        return resp
+    }
+
+    fun getShareFiles(
+            accessToken: String,
+            shareid: Long,
+            uk: Long,
+            sekey: String,
+            page: Int,
+            num: Int,
+    ): GetShareLinkFilesResponseDTO {
+        val url = "${BASE_URL}/rest/2.0/xpan/share".toHttpUrlOrNull()!!.newBuilder()
+                .addQueryParameter("method", "list")
+                .addQueryParameter("shareid", shareid.toString())
+                .addQueryParameter("uk", uk.toString())
+                .addQueryParameter("access_token", accessToken)
+                .addQueryParameter("page", page.toString())
+                .addQueryParameter("num", num.toString())
+                .addQueryParameter("root", "1")
+                // 接口返回的已经是 encode 之后的了，要decode，防止再次被 encode
+                .addQueryParameter("sekey", URLDecoder.decode(sekey))
+                .build()
+
+        val request = Request.Builder()
+                .url(url)
+                .get()
+                .build()
+
+        val response = okHttpClient.newCall(request).execute()
+        val json = response.body?.string()
+        val resp = gson.fromJson(json, GetShareLinkFilesResponseDTO::class.java)
+        if (resp.errno !=  0) {
+            log.error("get share link files error: response: {}", json)
+        }
+        return resp
+    }
+
+    fun saveShareLink(
+            accessToken: String,
+            shareid: Long,
+            from: Long,
+            sekey: String,
+            path: String,
+            fsidlist: List<Long>,
+            async: Int,
+            ondup:String = "newcopy",
+    ): SaveShareLinkResponseDTO {
+        val url = "${BASE_URL}/rest/2.0/xpan/share".toHttpUrlOrNull()!!.newBuilder()
+                .addQueryParameter("method", "transfer")
+                .addQueryParameter("shareid", shareid.toString())
+                .addQueryParameter("from", from.toString())
+                .addQueryParameter("access_token", accessToken)
+                .addQueryParameter("sekey", sekey)
+                .build()
+
+        val requestBody: RequestBody = FormBody.Builder()
+                .add("fsidlist", gson.toJson(fsidlist))
+                .add("path", path)
+                .add("async", async.toString())
+                .add("ondup", ondup)
+                .add("sekey", URLDecoder.decode(sekey))
+                .build()
+        val request = Request.Builder()
+                .url(url)
+                .header("Referer", "pan.baidu.com")
+                .post(requestBody)
+                .build()
+
+        val response = okHttpClient.newCall(request).execute()
+        val json = response.body?.string()
+        val resp = gson.fromJson(json, SaveShareLinkResponseDTO::class.java)
+        if (resp.errno !=  0) {
+            log.error("save share link error: response: {}", json)
+        }
+        return resp
     }
 
 

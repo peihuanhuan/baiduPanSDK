@@ -15,12 +15,14 @@ class PanTest {
     @Autowired
     lateinit var baiduService: BaiduService
 
-    private val tempAccessToken = "121.69a9784492f745ede12c4da824060e5f.YDl8lrWge8L-K4pIIKResbMhmnXPAUTA2YmRyLD.kHXraw"
+    private val tempAccessToken = "121.9d64b72ef703f27ba1b5944c53fb6198.YHHndLUfJbTJF_0dHukkjk2Y7ecAi-8KFsP8EKp.06lLZg"
+    private val tempUserAccessToken = "121.ad2754bf45b115d0b3d517ef8bfa9779.YCeh1KlHoc_Q446TOX6EWhk7E5IejHPWFgRahXQ.1QT7sw"
 
 
     @BeforeEach
     fun init() {
         baiduService.getConfigStorage().updateAccessToken("1", tempAccessToken, 100000)
+        baiduService.getConfigStorage().updateAccessToken("real-user", tempUserAccessToken, 100000)
     }
 
 
@@ -36,5 +38,27 @@ class PanTest {
         val x = mapOf("path" to "/apps/阿烫/回梦游仙.png", "newname" to "2.png")
         val yy = baiduService.getPanService().managerFile("1", opera = ManageFileOpera.RENAME, fileList = listOf(x), asyncModel = AsyncModel.AUTO)
         assert(yy)
+    }
+
+    @Test
+    fun test_list() {
+        val list = baiduService.getPanService().listFiles("1", "/保存share的文件/2023奥斯卡最佳动画：男孩、鼹鼠、狐狸和马.mp4")
+        println()
+    }
+
+    @Test
+    fun test_create_dir() {
+        val resp = baiduService.getPanService().createDir("1", "/保存share的文件/1/2/3/aaaaabbbbb")
+        println()
+    }
+
+    @Test
+    fun test_share() {
+        val list = baiduService.getPanService().listFiles("real-user", "/")
+        val fids = list.filter { it.category != 6 }.map { it.fs_id }
+        val shareResp = baiduService.getPanService().shareFiles("real-user", period = 1, fids = fids)
+        println("hi，这是我用百度网盘分享的内容~复制这段内容打开「百度网盘」APP即可获取  链接:${shareResp.link} 提取码:${shareResp.pwd}")
+        val saveShare = baiduService.getPanService().saveShareLink("1", "/保存share的文件/aaaaabbbbb", emptyList(), shareResp)
+        assert(saveShare.errno == 0)
     }
 }
