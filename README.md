@@ -1,10 +1,12 @@
 ## 百度云盘 Java SDK
 已实现功能：
 - [x] 授权，获取 accessToken、refreshToken
-- [x] 上传文件
+- [x] 上传文件/创建文件夹
 - [x] 分享文件
+- [x] 转存分享文件
 - [x] 查询文件列表
 - [x] 查询文件详情
+- [x] 管理文件（仅删除）
 
 ### 使用
 1. Maven 引用，最新版本为 ![https://mvnrepository.com/artifact/net.peihuan/baidu-pan-starter](https://img.shields.io/maven-central/v/net.peihuan/baidu-pan-starter.svg)
@@ -12,7 +14,7 @@
 <dependency>
     <groupId>net.peihuan</groupId>
     <artifactId>baidu-pan-starter</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
 </dependency>
 ```
 
