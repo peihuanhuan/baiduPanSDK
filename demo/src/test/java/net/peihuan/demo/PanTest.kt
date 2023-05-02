@@ -16,7 +16,7 @@ class PanTest {
     lateinit var baiduService: BaiduService
 
     private val tempAccessToken = "121.9d64b72ef703f27ba1b5944c53fb6198.YHHndLUfJbTJF_0dHukkjk2Y7ecAi-8KFsP8EKp.06lLZg"
-    private val tempUserAccessToken = "121.ad2754bf45b115d0b3d517ef8bfa9779.YCeh1KlHoc_Q446TOX6EWhk7E5IejHPWFgRahXQ.1QT7sw"
+    private val tempUserAccessToken = "121.7c7331eb8f8d237bbcf68b6cd4183755.YBEUaPLxO-8bg42qdlrP6dazfFEBkgxlvuUEFln.Zyq1Tw"
 
 
     @BeforeEach
@@ -48,17 +48,17 @@ class PanTest {
 
     @Test
     fun test_create_dir() {
-        val resp = baiduService.getPanService().createDir("1", "/保存share的文件/1/2/3/aaaaabbbbb")
+        val resp = baiduService.getPanService().createDir("1", "/")
         println()
     }
 
     @Test
     fun test_share() {
         val list = baiduService.getPanService().listFiles("real-user", "/")
-        val fids = list.filter { it.category != 6 }.map { it.fs_id }
+        val fids = list.filter { it.category != 6 }.map { it.fs_id }.take(1)
         val shareResp = baiduService.getPanService().shareFiles("real-user", period = 1, fids = fids)
         println("hi，这是我用百度网盘分享的内容~复制这段内容打开「百度网盘」APP即可获取  链接:${shareResp.link} 提取码:${shareResp.pwd}")
-        val saveShare = baiduService.getPanService().saveShareLink("1", "/保存share的文件/aaaaabbbbb", emptyList(), shareResp)
+        val saveShare = baiduService.getPanService().saveShareLink("1", "/", emptyList(), shareResp)
         assert(saveShare.errno == 0)
     }
 }

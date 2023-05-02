@@ -14,7 +14,7 @@
 <dependency>
     <groupId>net.peihuan</groupId>
     <artifactId>baidu-pan-starter</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.2</version>
 </dependency>
 ```
 

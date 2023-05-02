@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import net.peihuan.baiduPanSDK.config.BaiduPanProperties
 import net.peihuan.baiduPanSDK.domain.constant.AsyncModel
 import net.peihuan.baiduPanSDK.domain.constant.ManageFileOpera
+import net.peihuan.baiduPanSDK.domain.constant.SaveShareAsyncModel
 import net.peihuan.baiduPanSDK.domain.dto.*
 import net.peihuan.baiduPanSDK.exception.BaiduPanException
 import net.peihuan.baiduPanSDK.service.BaiduService
@@ -58,8 +59,9 @@ class PanServiceImpl(
         )
     }
 
-    override fun saveShareLink(userId: String, savePath: String, fs_ids: List<Long>, share: ShareResponseDTO) : SaveShareLinkResponseDTO {
-        val encodePath = baiduPanProperties.rootDir.removeSuffix("/") + "/" + savePath.removePrefix("/")
+    override fun saveShareLink(userId: String, savePath: String, fs_ids: List<Long>, share: ShareResponseDTO, async: SaveShareAsyncModel) : SaveShareLinkResponseDTO {
+        var encodePath = baiduPanProperties.rootDir.removeSuffix("/") + "/" + savePath.removePrefix("/")
+        encodePath = encodePath.removeSuffix("/")
 
         if (baiduPanProperties.shareThirdId == null || baiduPanProperties.shareSecret.isNullOrBlank()) {
             throw BaiduPanException("没有配置 shareThirdId 或 shareSecret，无法分享")
@@ -84,7 +86,7 @@ class PanServiceImpl(
         return baiduPanRemoteService.saveShareLink(accessToken = accessToken,
                 shareid = share.shareid,
                 sekey = verifyResp.randsk,
-                async = 0,
+                async = async.code,
                 from = share.uk,
                 path = encodePath,
                 fsidlist = finalFids)
@@ -145,7 +147,7 @@ class PanServiceImpl(
         return createResponse
     }
 
-    override fun createDir(userId: String, path: String, rtype: RtypeEnum): CreateResponseDTO {
+    override fun createDir(userId: String, path: String, rtype: RtypeEnum) {
         val encodePath = baiduPanProperties.rootDir.removeSuffix("/") + "/" + path.removePrefix("/")
         val accessToken = baiduService.getAccessToken(userId)
         val createResponse = baiduPanRemoteService.create(
@@ -159,12 +161,11 @@ class PanServiceImpl(
         )
         if (createResponse.errno == -8) {
             // 文件或目录已存在
-            throw BaiduPanException("创建文件夹失败，文件或目录已存在 $path")
+            return
         }
         if (createResponse.fs_id == 0L) {
             throw BaiduPanException("创建文件夹失败，错误码 " + createResponse.errno)
         }
-        return createResponse
     }
 
     private fun upload(
