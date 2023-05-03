@@ -96,7 +96,7 @@ class PanServiceImpl(
     override fun filemetas(userId: String, fsids: List<Long>, path: String?, dlink: Int): List<Filemeta> {
         val accessToken = baiduService.getAccessToken(userId)
         val resp =
-            baiduPanRemoteService.filemetas(accessToken = accessToken, fid_list = fsids, path = path, dlink = dlink)
+            baiduPanRemoteService.filemetas(accessToken = accessToken, fid_list = fsids.distinct(), path = path, dlink = dlink)
         return resp.list ?: emptyList()
     }
 

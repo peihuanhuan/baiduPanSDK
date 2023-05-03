@@ -1,9 +1,11 @@
 package net.peihuan.baiduPanSDK.service.remote
 
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import mu.KotlinLogging
 import net.peihuan.baiduPanSDK.config.BaiduPanProperties
 import net.peihuan.baiduPanSDK.domain.dto.AuthorizeResponseDTO
+import net.peihuan.baiduPanSDK.exception.BaiduPanException
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -69,6 +71,10 @@ class BaiduOAuthRemoteService(
         val response = okHttpClient.newCall(request).execute()
 
         val json = response.body?.string()
+        val obj = gson.fromJson(json, JsonObject::class.java)
+        if(obj.has("error")) {
+            throw BaiduPanException("刷新 accessToken 失败 $json")
+        }
         return gson.fromJson(json, AuthorizeResponseDTO::class.java)
 
     }
