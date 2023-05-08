@@ -29,7 +29,7 @@ class PanServiceImpl(
     private val part_max_size: Int = 4 * 1024 * 1024
 
 
-    override fun managerFile(userId: String, opera: ManageFileOpera, asyncModel: AsyncModel, fileList: List<Any>, ondup :String) : Boolean {
+    private fun managerFile(userId: String, opera: ManageFileOpera, asyncModel: AsyncModel, fileList: List<Any>, ondup :String) : Boolean {
         var finalList = fileList
         if (opera == ManageFileOpera.DELETE) {
             finalList = fileList.map { baiduPanProperties.rootDir.removeSuffix("/") + "/" + it.toString().removePrefix("/") }
@@ -40,6 +40,27 @@ class PanServiceImpl(
         val accessToken = baiduService.getAccessToken(userId)
 
         val response = baiduPanRemoteService.manageFile(accessToken, opera, asyncModel, finalList,ondup)
+        return response.errno == 0
+    }
+
+    override fun deleteFile(userId: String, filePath: List<String> , asyncModel: AsyncModel): Boolean {
+
+        val path = filePath.map { baiduPanProperties.rootDir.removeSuffix("/") + "/" + it.removePrefix("/") }
+
+        val accessToken = baiduService.getAccessToken(userId)
+
+        val response = baiduPanRemoteService.manageFile(accessToken, ManageFileOpera.DELETE, asyncModel, path)
+        return response.errno == 0
+    }
+
+    override fun copyFile(userId: String, request: CopyOrMoveFileRequest, asyncModel: AsyncModel,ondup: String): Boolean {
+        request.dest = baiduPanProperties.rootDir.removeSuffix("/") + "/" + request.dest.removePrefix("/")
+        request.path = baiduPanProperties.rootDir.removeSuffix("/") + "/" + request.path.removePrefix("/")
+
+        val list = listOf(request)
+        val accessToken = baiduService.getAccessToken(userId)
+
+        val response = baiduPanRemoteService.manageFile(accessToken, ManageFileOpera.COPY, asyncModel, list, ondup)
         return response.errno == 0
     }
 
@@ -164,7 +185,7 @@ class PanServiceImpl(
             return
         }
         if (createResponse.fs_id == 0L) {
-            throw BaiduPanException("创建文件夹失败，错误码 " + createResponse.errno)
+            throw BaiduPanException("创建文件夹 $encodePath 失败，错误码 " + createResponse.errno)
         }
     }
 

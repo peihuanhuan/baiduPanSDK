@@ -20,5 +20,14 @@ interface PanService {
     // savePath 必须要真实存在已创建!
     fun saveShareLink(userId: String, savePath:String, fs_ids: List<Long> = emptyList(), share: ShareResponseDTO, async: SaveShareAsyncModel = SaveShareAsyncModel.SYNC) : SaveShareLinkResponseDTO
 
-    fun managerFile(userId: String, opera: ManageFileOpera, asyncModel: AsyncModel, fileList: List<Any>, ondup :String = "override"): Boolean
+//    fun managerFile(userId: String, opera: ManageFileOpera, asyncModel: AsyncModel, fileList: List<Any>, ondup :String = "newcopy"): Boolean
+
+    fun deleteFile(userId: String, filePath: List<String> , asyncModel: AsyncModel): Boolean
+
+    /**
+     * ondup:  全局ondup,遇到重复文件的处理策略, fail(直接返回失败)、newcopy(重命名文件)、overwrite、skip   (测试overwrite没效果)
+     */
+    fun copyFile(userId: String, request: CopyOrMoveFileRequest, asyncModel: AsyncModel, ondup :String = "newcopy"): Boolean
+
+
 }

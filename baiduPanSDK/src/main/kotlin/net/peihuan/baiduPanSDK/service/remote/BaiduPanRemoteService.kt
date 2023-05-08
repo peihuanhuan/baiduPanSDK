@@ -301,7 +301,7 @@ class BaiduPanRemoteService(
             opera: ManageFileOpera,
             async: AsyncModel,
             filelist:List<Any>,
-            ondup: String = "override",
+            ondup: String = "overwrite",
     ): ManageFileResp {
         val urlBuilder = "${BASE_URL}/rest/2.0/xpan/file".toHttpUrlOrNull()!!.newBuilder()
                 .addQueryParameter("method", "filemanager")

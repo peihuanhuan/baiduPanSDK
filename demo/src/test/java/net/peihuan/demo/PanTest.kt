@@ -2,6 +2,7 @@ package net.peihuan.demo
 
 import net.peihuan.baiduPanSDK.domain.constant.AsyncModel
 import net.peihuan.baiduPanSDK.domain.constant.ManageFileOpera
+import net.peihuan.baiduPanSDK.domain.dto.CopyOrMoveFileRequest
 import net.peihuan.baiduPanSDK.service.BaiduService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -26,23 +27,38 @@ class PanTest {
     }
 
 
-    @Test
-    fun test_delete_files() {
-        val deleteResult = baiduService.getPanService().managerFile("1", opera = ManageFileOpera.DELETE, fileList = listOf("回梦游仙.png"), asyncModel = AsyncModel.AUTO)
-        assert(deleteResult)
-    }
+
+
+//    @Test
+//    fun test_rename() {
+//        val x = mapOf("path" to "/apps/阿烫/5.png", "newname" to "6.png")
+//        val yy = baiduService.getPanService().managerFile("1", opera = ManageFileOpera.RENAME, fileList = listOf(x), asyncModel = AsyncModel.AUTO)
+//        assert(yy)
+//    }
 
 
     @Test
     fun test_copy_files() {
-        val x = mapOf("path" to "/apps/阿烫/回梦游仙.png", "newname" to "2.png")
-        val yy = baiduService.getPanService().managerFile("1", opera = ManageFileOpera.RENAME, fileList = listOf(x), asyncModel = AsyncModel.AUTO)
+        val request = CopyOrMoveFileRequest(
+                path = "6.png",
+                dest = "/",
+                newname = "6-copy2.jpg"
+        )
+        val yy = baiduService.getPanService().copyFile("1", request , asyncModel = AsyncModel.SYNC)
         assert(yy)
     }
 
+
+    @Test
+    fun test_delete_files() {
+        val yy = baiduService.getPanService().deleteFile("1",  listOf("6-copy2.jpg"), asyncModel = AsyncModel.SYNC )
+        assert(yy)
+    }
+
+
     @Test
     fun test_list() {
-        val list = baiduService.getPanService().listFiles("1", "/保存share的文件/2023奥斯卡最佳动画：男孩、鼹鼠、狐狸和马.mp4")
+        val list = baiduService.getPanService().listFiles("1", "/春雨")
         println()
     }
 
