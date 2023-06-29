@@ -16,9 +16,8 @@ class PanTest {
     @Autowired
     lateinit var baiduService: BaiduService
 
-    private val tempAccessToken = "121.9d64b72ef703f27ba1b5944c53fb6198.YHHndLUfJbTJF_0dHukkjk2Y7ecAi-8KFsP8EKp.06lLZg"
-    private val tempUserAccessToken = "121.7c7331eb8f8d237bbcf68b6cd4183755.YBEUaPLxO-8bg42qdlrP6dazfFEBkgxlvuUEFln.Zyq1Tw"
-
+    private val tempAccessToken = "121.251310f03dd077025440930fbfa883dd.YmZ9f6sOjqY10rDAV5bjcTsgX0huzCB_JJEPw1O.hGaXBg"
+    private val tempUserAccessToken = "121.d23eaf74ec76578f3bcd17344d1c660d.Y5zsVSaXmULrjarjHYSk4Wttmfh-ICl57CnJPaw.yrR_mg"
 
     @BeforeEach
     fun init() {
@@ -58,10 +57,15 @@ class PanTest {
 
     @Test
     fun test_list() {
-        val list = baiduService.getPanService().listFiles("1", "/春雨")
+        val list = baiduService.getPanService().listFiles("real-user", "/")
         println()
     }
 
+    @Test
+    fun test_filemeta() {
+        val xxx = baiduService.getPanService().filemetas("1", listOf(234140919765777))
+        println()
+    }
     @Test
     fun test_create_dir() {
         val resp = baiduService.getPanService().createDir("1", "/")

@@ -162,9 +162,9 @@ class PanServiceImpl(
                 block_list = blockList,
                 rtype = rtype
         )
-        if (createResponse.fs_id == 0L) {
-            throw BaiduPanException("文件合并失败，错误码 " + createResponse.errno)
-        }
+//        if (createResponse.fs_id == 0L) {
+//            throw BaiduPanException("文件合并失败，错误码 " + createResponse.errno)
+//        }
         return createResponse
     }
 
