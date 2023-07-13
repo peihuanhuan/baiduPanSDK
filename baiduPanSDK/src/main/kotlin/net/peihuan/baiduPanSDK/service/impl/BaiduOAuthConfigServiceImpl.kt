@@ -40,6 +40,10 @@ class BaiduOAuthConfigServiceImpl(
         baiduOps.expire(getAccessTokenKey(userId), 0, TimeUnit.SECONDS)
     }
 
+    override fun expireRefreshToken(userId: String) {
+        baiduOps.expire(getRefreshTokenKey(userId), 0, TimeUnit.SECONDS)
+    }
+
     override fun updateAccessToken(userId: String, accessToken: String, expiresInSeconds: Int) {
         baiduOps.setValue(getAccessTokenKey(userId), accessToken, expiresInSeconds, TimeUnit.SECONDS)
 

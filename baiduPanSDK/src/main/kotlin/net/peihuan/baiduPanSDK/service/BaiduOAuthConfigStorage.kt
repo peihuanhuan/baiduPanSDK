@@ -16,6 +16,8 @@ interface BaiduOAuthConfigStorage {
 
     fun expireAccessToken(userId: String)
 
+    fun expireRefreshToken(userId: String)
+
     fun updateAccessToken(userId: String, accessToken: String, expiresInSeconds: Int)
 
 

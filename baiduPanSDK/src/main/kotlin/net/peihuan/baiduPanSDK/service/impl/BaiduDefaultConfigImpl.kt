@@ -44,6 +44,10 @@ class BaiduDefaultConfigImpl : BaiduOAuthConfigStorage {
         accessTokenExpiresTimeMap.put(userId, 0)
     }
 
+    override fun expireRefreshToken(userId: String) {
+        refreshTokenExpiresTimeMap.put(userId, 0)
+    }
+
     override fun updateAccessToken(userId: String, accessToken: String, expiresInSeconds: Int) {
         accessTokenMap.put(userId, accessToken)
         // 预留200秒的时间

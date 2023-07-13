@@ -10,7 +10,6 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
-
 class BaiduOAuthRemoteService(
     private val okHttpClient: OkHttpClient,
     private val baiduPanProperties: BaiduPanProperties
@@ -19,6 +18,7 @@ class BaiduOAuthRemoteService(
     private val gson =  Gson()
 
     private val BASE_URL = "http://openapi.baidu.com"
+    private val log = KotlinLogging.logger {}
 
     fun authorize(redirectUrl: String, state: String? = null): String {
 
@@ -71,6 +71,7 @@ class BaiduOAuthRemoteService(
         val response = okHttpClient.newCall(request).execute()
 
         val json = response.body?.string()
+        log.info("刷新 baidu token, refreshToken: $refreshToken, resp: $json")
         val obj = gson.fromJson(json, JsonObject::class.java)
         if(obj.has("error")) {
             throw BaiduPanException("刷新 accessToken 失败 $json")
