@@ -148,7 +148,7 @@ class PanServiceImpl(
                 rtype = rtype
         )
         if (precreate.uploadid == null) {
-            throw BaiduPanException("上传失败 errno" + precreate.errno)
+            throw BaiduPanException("上传失败 errno ${precreate.errno}, path $path size ${file.length()} block_list $blockList")
         }
 
         upload(file, accessToken, encodePath, precreate)

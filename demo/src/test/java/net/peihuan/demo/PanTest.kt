@@ -26,6 +26,12 @@ class PanTest {
     }
 
 
+    @Test
+    fun test_upload() {
+        val file = File("C:\\Users\\pei\\Desktop\\可汗的互联网黑话（五）.txt")
+        val resp = baiduService.getPanService().uploadFile("1", "/可汗的互联网黑话（五）.txt", file)
+        println()
+    }
 
 
 //    @Test
